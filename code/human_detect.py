@@ -100,6 +100,7 @@ def detect(path):
                 if counter == 0:
                     counter=1
                     modechanger=1
+                    imgmodelist[modechanger] = cv2.resize(imgmodelist[modechanger], (410, 383))
                     imgbackground[45:45 + 383, 860:860 + 410, :] = imgmodelist[modechanger]
         if counter != 0:
             #yha first frame pe data downloade ho rha hai server se
