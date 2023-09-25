@@ -17,16 +17,16 @@ firebase_admin.initialize_app(cred,{
 
 
 #importing the images of persons
-floderPath = 'person'
-peoplefloderpath = os.listdir(floderPath)
-# print(peoplefloderpath)
+folderPath = 'person'
+peoplefolderpath = os.listdir(folderPath)
+# print(peoplefolderpath)
 imglist = []
 personIDs =[]
 
 # this loop stores the data into list
-for path in peoplefloderpath:
+for path in peoplefolderpath:
     # add images to img list
-    imglist.append(cv2.imread(os.path.join(floderPath,path)))
+    imglist.append(cv2.imread(os.path.join(folderPath,path)))
     # print(path)
     # print(os.path.splitext(path))
     # add id to id-list
@@ -34,7 +34,7 @@ for path in peoplefloderpath:
 
 
     # uploading images to server
-    filename = f'{floderPath}/{path}'
+    filename = f'{folderPath}/{path}'
     bucket = storage.bucket()
     blob= bucket.blob(filename)
     blob.upload_from_filename(filename)
