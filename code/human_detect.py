@@ -20,16 +20,20 @@ firebase_admin.initialize_app(cred,{
 bucket = storage.bucket()
 
 def detect(path):
-    face = cv2.CascadeClassifier("./haarcascade_fullbody.xml")
+
+    # Reading Harcascade file for Detection 
+    full_body = cv2.CascadeClassifier("./Haarcascade files/haarcascade_fullbody.xml") # Reading for full body Detection 
+    face = cv2.CascadeClassifier("./Haarcascade files/haarcascade_frontalface_default.xml") # Reading for face Detction 
+
     # web cam setup
     cam = cv2.VideoCapture(path)
     cam.set(3, 740)
     cam.set(4, 480)
 
-    cap = cv2.VideoCapture("bottom_right.mp4")
+    cap = cv2.VideoCapture("./GUI Content/bottom_right.mp4")
 
-    # modes' folder is opening here   
-    foldermodepath = './modes'  # Use forward slash (/) for paths
+    # modes folder is opening here   
+    foldermodepath = './GUI Content/modes'  # Use forward slash (/) for paths
     modePathList = os.listdir(foldermodepath)
     imgmodelist = []
     # here we are creating mode list to show modes to user
@@ -37,7 +41,7 @@ def detect(path):
         imgmodelist.append(cv2.imread(os.path.join(foldermodepath, mode_file)))
 
     # assinging background image to project
-    imgbackground = cv2.imread("HACKTHON PROJECT.png")
+    imgbackground = cv2.imread("./GUI Content/HACKTHON PROJECT.png")
 
     print("Loading the encoded file.....")
     # Load the encoding file
@@ -68,6 +72,13 @@ def detect(path):
         col = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         col = cv2.bilateralFilter(col,5,1,1)
         
+        full_body_cap = full_body.detectMultiScale(
+            col,
+            scaleFactor=1.1,
+            minNeighbors=5,
+            flags=cv2.CASCADE_SCALE_IMAGE
+        )
+
         face_cap = face.detectMultiScale(
             col,
             scaleFactor=1.1,
@@ -77,7 +88,12 @@ def detect(path):
 
         person = 1 # Variable to count person
 
-        # Drawing the regions in the image
+        # Drawing full body regions in the frame
+        for (x, y, w, h) in full_body_cap:
+            cv2.rectangle(img, (x, y), (x+w, y+h), (0, 0, 255), 2)
+            person += 1  # incrimenting according to number of rectangles created
+
+        # Drawing face regions in frame
         for (x, y, w, h) in face_cap:
             cv2.rectangle(img, (x, y), (x+w, y+h), (0, 0, 0), 2)
             person += 1  # incrimenting according to number of rectangles created
@@ -181,7 +197,7 @@ def detect(path):
         # yha pe  actual project show ho rha hai 
         cv2.imshow("Human_detect", imgbackground)
         #wait ki se image ko roka ja sakta hai 
-        if cv2.waitKey(10) == ord("a"):
+        if cv2.waitKey(5) == ord("a"):
             break #to end the project click a
     #releases the cam  and all windowns 
     cam.release()
@@ -195,7 +211,7 @@ if __name__ == "__main__":
         if flag == "1":
             detect(0)  # Use 0 to indicate the default camera (webcam)
         elif flag == "2":
-            path = input("Enter path with video name: ")
+            path = input("Enter path with video name (eg: ./Sample videos/sample video.avi): ")
             detect(path)
         elif flag == "3":
             break
