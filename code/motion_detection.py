@@ -14,10 +14,10 @@ def motion_tracking():
     start_frame = cv2.cvtColor(start_frame, cv2.COLOR_BGR2GRAY)
     start_frame = cv2.GaussianBlur(start_frame, (21, 21), 0)
 
-    imgbackground = cv2.imread("./GUI Content/Motion_detetion_template.png")
+    imgbackground = cv2.imread("./GUI Content/HACKTHON PROJECT.png")
 
     alarm = False
-    alarm_mode = True
+    alarm_mode = False
     alarm_counter = 0
 
     def beep_alarm():
@@ -41,14 +41,13 @@ def motion_tracking():
             threshold = cv2.threshold(difference, 25, 255, cv2.THRESH_BINARY)[1]
             start_frame = frame_bw
 
-            if threshold.sum() > 300:
+            if threshold.sum() > 250 :
                 # print(threshold.sum())
-                print(alarm_counter)
+                # print(alarm_counter)
                 alarm_counter += 1
             else:
                 alarm_counter -= 1 
-                
-            
+
             threshold = cv2.cvtColor(threshold, cv2.COLOR_GRAY2BGR)
 
             threshold = cv2.resize(threshold, (740, 480))
@@ -57,6 +56,8 @@ def motion_tracking():
             frame = cv2.resize(frame, (740, 480))
             imgbackground[150:150+480, 50:50+740] = frame
 
+        cv2.putText(imgbackground, f"Press 'c' to start motion detection.", (880,520),cv2.FONT_HERSHEY_DUPLEX,0.6, (0,0,0), 1)
+        cv2.putText(imgbackground, f"Press 'a' to exit.", (880,540),cv2.FONT_HERSHEY_DUPLEX,0.6, (0,0,0), 1)
         cv2.imshow("Motion_Tracking", imgbackground)
 
         if alarm_counter > 5:
@@ -75,4 +76,6 @@ def motion_tracking():
     cap.release()
     cv2.destroyAllWindows()
 
-motion_tracking()
+if __name__ == "__main__":
+    motion_tracking()
+    

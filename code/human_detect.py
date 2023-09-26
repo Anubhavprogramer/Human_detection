@@ -10,6 +10,7 @@ from firebase_admin import db
 from firebase_admin import storage
 from datetime import datetime
 from playsound import playsound # To playsounds
+from motion_detection import motion_tracking 
 
 cred = credentials.Certificate("ServiceAccountKey.json")
 firebase_admin.initialize_app(cred,{
@@ -136,9 +137,9 @@ def detect(path):
             # print("Match Index is: ",matchIndex)
             if matches[matchIndex]:
                 # personIDs[matchIndex]
-                
+
                 playsound("./Sound effects/Beep.mp3")  # Playing the sound
-                
+
                 # adding square to web cam  jo face detect krta hai
                 y1,x2,y2,x1 = faceLoc
                 y1,x2,y2,x1 = y1*4 ,x2*4 ,y2*4 ,x1*4  
@@ -206,7 +207,7 @@ def detect(path):
 if __name__ == "__main__":
     # to run the code endlessly
     while True:
-        flag = input("\n1) Detect humans through External Cams (webcam)\n2) Detect humans through Prestored Video\n3) exit\nEnter your choice(1 or 2 or 3): ")
+        flag = input("\n1) Detect humans through External Cams (webcam)\n2) Detect humans through Prestored Video\n3) Motion Detection\n4) exit\nEnter your choice(1 or 2 or 3 or 4): ")
 
         if flag == "1":
             detect(0)  # Use 0 to indicate the default camera (webcam)
@@ -214,6 +215,8 @@ if __name__ == "__main__":
             path = input("Enter path with video name (eg: ./Sample videos/sample video.avi): ")
             detect(path)
         elif flag == "3":
+            motion_tracking()
+        elif flag == "4":
             break
         else:
             print("!!INVALID OPERATION!!, please enter valid operation (1 or 2 or 3)\n")
