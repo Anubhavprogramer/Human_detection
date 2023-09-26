@@ -1,7 +1,14 @@
 import cv2
 
-def motion():
-    cap = cv2.VideoCapture("./Sample videos/sample video.avi") #capturing video from webcam
+# def calculate_distance(known_height, face_height, focal_length):
+#     distance = (known_height * focal_length) / face_height
+#     return distance
+
+def motion(path):
+    cap = cv2.VideoCapture(path) #capturing video from webcam
+
+    # Set the known height of a human face in meters
+    known_face_height = 0.15  # Assuming an average face height of 15 centimeters (0.15 meters)
 
     ret, frame1 = cap.read()
     ret, frame2 = cap.read()
@@ -17,14 +24,21 @@ def motion():
         dilate = cv2.dilate(thresh, None, iterations=3)  # 
         contours, _ = cv2.findContours(dilate, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-        for contour in contours:
-            (x, y,  w, h) = cv2.boundingRect(contour)
+        # for contour in contours:
+        #     (x, y,  w, h) = cv2.boundingRect(contour)
+        #     if cv2.contourArea(contour) < 800:
+        #         continue
+        #     cv2.rectangle(frame1, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
-            if cv2.contourArea(contour) > 1000:
-                continue
-            cv2.rectangle(frame1, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        #     focal_length = 400  # Replace with your actual focal length
 
-        # cv2.drawContours(frame1, contours, -1, (0,255,0), 2) # Drawing detected area
+        #     # Calculate the height of the detected face
+        #     face_height = h
+
+        #     # Calculate the distance in meters
+        #     distance = calculate_distance(known_face_height, face_height, focal_length)
+
+        cv2.drawContours(frame1, contours, -1, (0,255,0), 2) # Drawing detected area
 
         frame1 = cv2.resize(frame1, (740, 480))
         imgbackground[150:150+480, 50:50+740] = frame1
@@ -33,9 +47,10 @@ def motion():
 
         ret, frame2 = cap.read()
 
-        if cv2.waitKey(20) == ord("a"):
+        if cv2.waitKey(30) == ord("a"):
             break
 
+        # cv2.putText(frame1, f"Distance: {distance:.2f} meters", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
         cv2.putText(imgbackground, f"Press 'a' to exit.", (880,540),cv2.FONT_HERSHEY_DUPLEX,0.6, (0,0,0), 1)
         cv2.imshow("Motion_Tracking", imgbackground)
 
@@ -43,4 +58,5 @@ def motion():
     cv2.destroyAllWindows()
 
 if __name__  == "__main__":
-    motion()
+    path = input("Enter '0' for webcam and './Sample videos/sample video.avi' for prerecorded videos: ")
+    motion(0) if path == "0" else motion(path)

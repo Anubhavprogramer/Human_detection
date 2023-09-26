@@ -19,11 +19,19 @@ firebase_admin.initialize_app(cred,{
 
 bucket = storage.bucket()
 
+def calculate_distance(known_height, face_height, focal_length):
+    distance = (known_height * focal_length) / face_height
+    return distance
+
 def detect(path):
 
     # Reading Harcascade file for Detection 
     full_body = cv2.CascadeClassifier("./Haarcascade files/haarcascade_fullbody.xml") # Reading for full body Detection 
     face = cv2.CascadeClassifier("./Haarcascade files/haarcascade_frontalface_default.xml") # Reading for face Detction 
+
+    # Set the known height of a human face in meters
+    known_face_height = 0.15  # Assuming an average face height of 15 centimeters (0.15 meters)
+
 
     # web cam setup
     cam = cv2.VideoCapture(path)
@@ -91,13 +99,30 @@ def detect(path):
         # Drawing full body regions in the frame
         for (x, y, w, h) in full_body_cap:
             cv2.rectangle(img, (x, y), (x+w, y+h), (0, 0, 255), 2)
+            # Calculate the focal length (you can measure this experimentally)
+            focal_length = 600  # Replace with your actual focal length
+
+            # Calculate the height of the detected face
+            face_height = h
+
+            # Calculate the distance in meters
+            distance = calculate_distance(known_face_height, face_height, focal_length)
+
             person += 1  # incrimenting according to number of rectangles created
 
         # Drawing face regions in frame
         for (x, y, w, h) in face_cap:
             cv2.rectangle(img, (x, y), (x+w, y+h), (0, 0, 0), 2)
+            focal_length = 600  # Replace with your actual focal length
+
+            # Calculate the height of the detected face
+            face_height = h
+
+            # Calculate the distance in meters
+            distance = calculate_distance(known_face_height, face_height, focal_length)
             person += 1  # incrimenting according to number of rectangles created
 
+        cv2.putText(img, f"Distance: {distance:.2f} meters", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
         # Displaying total number of persons in frame
         cv2.putText(bottom_right, f'Live Census: {person - 1} ', (40,50), cv2.FONT_HERSHEY_DUPLEX, 0.8, (0,0,0), 2)
         # Displaying info to exit the video window
@@ -137,7 +162,7 @@ def detect(path):
             if matches[matchIndex]:
                 # personIDs[matchIndex]
 
-                playsound("./Sound effects/Beep.mp3")  # Playing the sound
+                # playsound("./Sound effects/Beep.mp3")  # Playing the sound
 
                 # adding square to web cam  jo face detect krta hai
                 # y1,x2,y2,x1 = faceLoc
@@ -214,7 +239,8 @@ if __name__ == "__main__":
             path = input("Enter path with video name (eg: ./Sample videos/sample video.avi): ")
             detect(path)
         elif flag == "3":
-            motion()
+            path = input("Enter path with video name (eg: '0' For Webcam and  './Sample videos/sample video.avi' for prerecorded videos): ")
+            motion(0) if path == "0" else motion(path)
         elif flag == "4":
             break
         else:
