@@ -3,14 +3,13 @@ import cv2
 import pickle
 import face_recognition
 import numpy as np
-import cvzone
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
 from firebase_admin import storage
 from datetime import datetime
 from playsound import playsound # To playsounds
-from motion_detection import motion_tracking 
+from motion import motion
 
 cred = credentials.Certificate("ServiceAccountKey.json")
 firebase_admin.initialize_app(cred,{
@@ -141,10 +140,10 @@ def detect(path):
                 playsound("./Sound effects/Beep.mp3")  # Playing the sound
 
                 # adding square to web cam  jo face detect krta hai
-                y1,x2,y2,x1 = faceLoc
-                y1,x2,y2,x1 = y1*4 ,x2*4 ,y2*4 ,x1*4  
-                bbox=60+x1,150+y1,x2-x1,y2-y1
-                imgbackground=cvzone.cornerRect(imgbackground,bbox,rt=0)
+                # y1,x2,y2,x1 = faceLoc
+                # y1,x2,y2,x1 = y1*4 ,x2*4 ,y2*4 ,x1*4  
+                # bbox=60+x1,150+y1,x2-x1,y2-y1
+                # imgbackground=cvzone.cornerRect(imgbackground,bbox,rt=0)
                 
                 # id jo images ko di hai vo ispe store hogi
                 id = personIDs[matchIndex]
@@ -215,7 +214,7 @@ if __name__ == "__main__":
             path = input("Enter path with video name (eg: ./Sample videos/sample video.avi): ")
             detect(path)
         elif flag == "3":
-            motion_tracking()
+            motion()
         elif flag == "4":
             break
         else:
