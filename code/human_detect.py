@@ -8,7 +8,7 @@ from firebase_admin import credentials
 from firebase_admin import db
 from firebase_admin import storage
 from datetime import datetime
-from playsound import playsound # To playsounds
+import winsound # To playsounds
 from motion import motion
 
 cred = credentials.Certificate("ServiceAccountKey.json")
@@ -163,7 +163,13 @@ def detect(path):
                 # personIDs[matchIndex]
 
                 # playsound("./Sound effects/Beep.mp3")  # Playing the sound
-
+                # frequency is set to 500Hz
+                freq = 500
+                
+                # duration is set to 100 milliseconds            
+                dur = 100
+                            
+                winsound.Beep(freq, dur)
                 # adding square to web cam  jo face detect krta hai
                 # y1,x2,y2,x1 = faceLoc
                 # y1,x2,y2,x1 = y1*4 ,x2*4 ,y2*4 ,x1*4  
