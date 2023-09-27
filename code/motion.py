@@ -1,5 +1,5 @@
 import cv2
-
+import os
 # def calculate_distance(known_height, face_height, focal_length):
 #     distance = (known_height * focal_length) / face_height
 #     return distance
@@ -12,6 +12,16 @@ def motion(path):
 
     ret, frame1 = cap.read()
     ret, frame2 = cap.read()
+
+    
+    # modes folder is opening here   
+    foldermodepath = './GUI Content/modes'  # Use forward slash (/) for paths
+    modePathList = os.listdir(foldermodepath)
+    imgmodelist = []
+    modechanger = 0 #helps to switch between modes
+    # here we are creating mode list to show modes to user
+    for mode_file in modePathList:
+        imgmodelist.append(cv2.imread(os.path.join(foldermodepath, mode_file)))
 
     imgbackground = cv2.imread("./GUI Content/HACKTHON PROJECT.png") # Reading background image
 
@@ -42,6 +52,8 @@ def motion(path):
 
         frame1 = cv2.resize(frame1, (740, 480))
         imgbackground[150:150+480, 50:50+740] = frame1
+        imgmodelist[modechanger] = cv2.resize(imgmodelist[modechanger], (410, 383))
+        imgbackground[45:45 + 383, 860:860 + 410, :] = imgmodelist[modechanger]  # Adding mode to the project
 
         frame1 = frame2
 
@@ -54,6 +66,8 @@ def motion(path):
         cv2.putText(imgbackground, f"Press 'a' to exit.", (880,540),cv2.FONT_HERSHEY_DUPLEX,0.6, (0,0,0), 1)
         cv2.imshow("Motion_Tracking", imgbackground)
 
+        imgmodelist[modechanger] = cv2.resize(imgmodelist[modechanger], (410, 383))
+        imgbackground[45:45 + 383, 860:860 + 410, :] = imgmodelist[modechanger]  # Adding mode to the project
     cap.release()
     cv2.destroyAllWindows()
 
