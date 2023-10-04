@@ -1,4 +1,5 @@
 
+
         #YE PROJECT HAMLOG KISI BHI LANGUAGE PE BANA SAKTE HAI#
 
 "Robust human target detection and acquisition" refers to the development of a system or technology that can reliably identify and track human targets in various conditions and environments. This concept is commonly associated with applications in fields such as surveillance, security, autonomous vehicles, robotics, and computer vision. Let's break down the key components of this concept:

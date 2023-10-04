@@ -1,8 +1,9 @@
 import cv2
 import os
-# def calculate_distance(known_height, face_height, focal_length):
-#     distance = (known_height * focal_length) / face_height
-#     return distance
+
+def calculate_distance(known_height, face_height, focal_length):
+    distance = (known_height * focal_length) / face_height
+    return distance
 
 def motion(path):
     cap = cv2.VideoCapture(path) #capturing video from webcam
@@ -33,7 +34,7 @@ def motion(path):
         _, thresh = cv2.threshold(blur, 20, 255, cv2.THRESH_BINARY) # setting threshold to detect
         dilate = cv2.dilate(thresh, None, iterations=3)  # 
         contours, _ = cv2.findContours(dilate, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-
+        distance = 0
         # for contour in contours:
         #     (x, y,  w, h) = cv2.boundingRect(contour)
         #     if cv2.contourArea(contour) < 800:
@@ -59,11 +60,11 @@ def motion(path):
 
         ret, frame2 = cap.read()
 
-        if cv2.waitKey(30) == ord("a"):
+        if cv2.waitKey(30) == 27:
             break
 
         # cv2.putText(frame1, f"Distance: {distance:.2f} meters", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-        cv2.putText(imgbackground, f"Press 'a' to exit.", (880,540),cv2.FONT_HERSHEY_DUPLEX,0.6, (0,0,0), 1)
+        cv2.putText(imgbackground, f"Press 'esc' to exit.", (880,540),cv2.FONT_HERSHEY_DUPLEX,0.6, (0,0,0), 1)
         cv2.imshow("Motion_Tracking", imgbackground)
 
         imgmodelist[modechanger] = cv2.resize(imgmodelist[modechanger], (410, 383))

@@ -10,6 +10,7 @@ from firebase_admin import storage
 from datetime import datetime
 import winsound # To playsounds
 from motion import motion
+from object_detect import obj_detection
 
 cred = credentials.Certificate("ServiceAccountKey.json")
 firebase_admin.initialize_app(cred,{
@@ -122,11 +123,12 @@ def detect(path):
             distance = calculate_distance(known_face_height, face_height, focal_length)
             person += 1  # incrimenting according to number of rectangles created
 
+        # Displaying distance of people from the camera
         cv2.putText(img, f"Distance: {distance:.2f} meters", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
         # Displaying total number of persons in frame
         cv2.putText(bottom_right, f'Live Census: {person - 1} ', (40,50), cv2.FONT_HERSHEY_DUPLEX, 0.8, (0,0,0), 2)
         # Displaying info to exit the video window
-        cv2.putText(bottom_right, f"Press 'a' to exit.", (40,175),cv2.FONT_HERSHEY_PLAIN,0.8, (0,0,0), 1)
+        cv2.putText(bottom_right, f"Press 'esc' to exit.", (40,175),cv2.FONT_HERSHEY_PLAIN,0.8, (0,0,0), 1)
 
         imgS = cv2.resize(img, (0, 0), None, 0.25, 0.25)  # resizing the web cam output        
         imgS = cv2.cvtColor(imgS, cv2.COLOR_BGR2RGB)  # color change 
@@ -224,11 +226,11 @@ def detect(path):
                 PersonInfo=[]
                 imgperson = []
                 imgbackground[45:45 + 383, 860:860 + 410, :] = imgmodelist[modechanger]
-        
+
         # yha pe  actual project show ho rha hai 
         cv2.imshow("Human_detect", imgbackground)
         #wait ki se image ko roka ja sakta hai 
-        if cv2.waitKey(5) == ord("a"):
+        if cv2.waitKey(5) == 27:
             break #to end the project click a
     #releases the cam  and all windowns 
     cam.release()
@@ -237,7 +239,7 @@ def detect(path):
 if __name__ == "__main__":
     # to run the code endlessly
     while True:
-        flag = input("\n1) Detect humans through External Cams (webcam)\n2) Detect humans through Prestored Video\n3) Motion Detection\n4) exit\nEnter your choice(1 or 2 or 3 or 4): ")
+        flag = input("\n1) Detect humans through External Cams (webcam)\n2) Detect humans through Prestored Video\n3) Motion Detection\n4) Object Detection\n5) exit\nEnter your choice(1 or 2 or 3 or 4 or 5): ")
 
         if flag == "1":
             detect(0)  # Use 0 to indicate the default camera (webcam)
@@ -248,6 +250,9 @@ if __name__ == "__main__":
             path = input("Enter path with video name (eg: '0' For Webcam and  './Sample videos/sample video.avi' for prerecorded videos): ")
             motion(0) if path == "0" else motion(path)
         elif flag == "4":
+            path = input("Enter path with video name (eg: '0' For Webcam and  './Sample videos/sample video.avi' for prerecorded videos): ")
+            obj_detection(0) if path == "0" else obj_detection(path)
+        elif flag == "5":
             break
         else:
-            print("!!INVALID OPERATION!!, please enter valid operation (1 or 2 or 3)\n")
+            print("!!INVALID OPERATION!!, please enter valid operation (1 or 2 or 3 or 4 or 5)\n")
