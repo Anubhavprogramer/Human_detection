@@ -45,12 +45,12 @@ bottle
 spoon
 bowl
 banana
-apple
+hot dog
 sandwich
 orange
 broccoli
 carrot
-hot dog
+apple
 pizza
 donut
 cake
