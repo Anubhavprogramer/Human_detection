@@ -15,7 +15,7 @@ classLabels = []
 file_name = './Object_detection_files/labels.txt'
 with open(file_name, 'rt') as fpt:
     classLabels = fpt.read().rstrip('\n').split('\n')
-print(classLabels) # printing the object names
+# print(classLabels) # printing the object names
 
 # setting the frame size, scale and mean
 model.setInputSize(320,320)

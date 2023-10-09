@@ -11,6 +11,9 @@ from datetime import datetime
 import winsound # To playsounds
 from motion import motion
 from object_detect import obj_detection
+import tkinter as tk
+from tkinter import Entry, Button
+
 
 cred = credentials.Certificate("ServiceAccountKey.json")
 firebase_admin.initialize_app(cred,{
@@ -26,6 +29,9 @@ def calculate_distance(known_height, face_height, focal_length):
 
 def detect(path):
 
+    distance = 0.0
+    x=0
+    y=0
     # Reading Harcascade file for Detection 
     full_body = cv2.CascadeClassifier("./Haarcascade files/haarcascade_fullbody.xml") # Reading for full body Detection 
     face = cv2.CascadeClassifier("./Haarcascade files/haarcascade_frontalface_default.xml") # Reading for face Detction 
@@ -237,22 +243,50 @@ def detect(path):
     cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-    # to run the code endlessly
-    while True:
-        flag = input("\n1) Detect humans through External Cams (webcam)\n2) Detect humans through Prestored Video\n3) Motion Detection\n4) Object Detection\n5) exit\nEnter your choice(1 or 2 or 3 or 4 or 5): ")
 
-        if flag == "1":
-            detect(0)  # Use 0 to indicate the default camera (webcam)
-        elif flag == "2":
-            path = input("Enter path with video name (eg: ./Sample videos/sample video.avi): ")
-            detect(path)
-        elif flag == "3":
-            path = input("Enter path with video name (eg: '0' For Webcam and  './Sample videos/sample video.avi' for prerecorded videos): ")
-            motion(0) if path == "0" else motion(path)
-        elif flag == "4":
-            path = input("Enter path with video name (eg: '0' For Webcam and  './Sample videos/sample video.avi' for prerecorded videos): ")
-            obj_detection(0) if path == "0" else obj_detection(path)
-        elif flag == "5":
-            break
-        else:
-            print("!!INVALID OPERATION!!, please enter valid operation (1 or 2 or 3 or 4 or 5)\n")
+    path = ""  # Initialize the path variable
+
+    def perform_action():
+        global path  # Use the global path variable
+        path = path_entry.get()
+        print(path)
+
+    window = tk.Tk()
+    window.title("HUMAN TARGET DETECTION SYSTEM")
+
+    # Create an Entry widget for the user to enter the video path
+    path_entry_label = tk.Label(window, text="Enter Video Path:")
+    path_entry_label.pack(pady=10)
+
+    path_entry = Entry(window)
+    path_entry.pack(pady=10)
+
+    # Create a button to trigger the action
+    action_button = Button(window, text="Add a new path", command=perform_action)
+    action_button.pack(pady=10)
+
+    # Create buttons to call the functions
+    button_human_detection = tk.Button(window, text="Face Recognition and detection with webcam", command=lambda: detect(0))
+    button_human_detection.pack(pady=10)
+
+    # Replace 'path' with the actual path you want to use
+    button_motion_detection = tk.Button(window, text="Face Recognition and detection with Path", command=lambda: detect(path))
+    button_motion_detection.pack(pady=10)
+
+    button_motion_detection = tk.Button(window, text="Motion detection with webcam", command=lambda: motion(0))
+    button_motion_detection.pack(pady=10)
+
+    # Replace 'path' with the actual path you want to use
+    button_motion_detection = tk.Button(window, text="Motion detection with Path", command=lambda: motion(path))
+    button_motion_detection.pack(pady=10)
+
+    button_motion_detection = tk.Button(window, text="object Recognition and detection with webcam", command=lambda: obj_detection(0))
+    button_motion_detection.pack(pady=10)
+
+    # Replace 'path' with the actual path you want to use
+    button_motion_detection = tk.Button(window, text="object Recognition and detection with Path", command=lambda: obj_detection(path))
+    button_motion_detection.pack(pady=10)
+
+
+    # Start the Tkinter main loop
+    window.mainloop()
